@@ -10,10 +10,6 @@
 		user: '',
 		pass: '',
 		upload: false,
-		export_url: false,
-		download_aria2: false,
-		copy_on_forbidden: false,
-		copy_parent_id: '',
 		lite: false
 	};
 (function () {
@@ -2706,22 +2702,7 @@
   }
 
   const gd = new GoogleDrive(self.props);
-  const HTML = `<!DOCTYPE html><html lang=en><head>
-  <meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1">
-  <title>${self.props.title}</title>
-  <link href="/~_~_gdindex/resources/css/app.css" rel=stylesheet>
-  </head>
-  <body>
-	<script>window.props = { title: '${self.props.title}',
-	default_root_id: '${self.props.default_root_id}',
-	api: location.protocol + '//' + location.host, upload: ${self.props.upload} },
-	export_url: ${self.props.export_url},
-	download_aria2: ${self.props.download_aria2}
-	<\/script>
-  <div id=app></div>
-  <script src="/~_~_gdindex/resources/js/app.js"><\/script>
-  </body>
-  </html>`;
+  const HTML = `<!DOCTYPE html><html lang=en><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><title>${self.props.title}</title><link href="/~_~_gdindex/resources/css/app.css" rel=stylesheet></head><body><script>window.props = { title: '${self.props.title}', default_root_id: '${self.props.default_root_id}', api: location.protocol + '//' + location.host, upload: ${self.props.upload} }<\/script><div id=app></div><script src="/~_~_gdindex/resources/js/app.js"><\/script></body></html>`;
 
   async function onGet(request) {
     let {
@@ -2765,38 +2746,7 @@
       const isGoogleApps = result.mimeType.includes('vnd.google-apps');
 
       if (!isGoogleApps) {
-        let r;
-
-        try {
-          r = await gd.download(result.id, request.headers.get('Range'));
-        } catch (e) {
-          if (e.toString().indexOf('Forbidden') !== -1 && self.props.copy_on_forbidden) {
-            // add id into copy filename, which prevents conflicting
-            const filename = result.name;
-            const copyFileName = result.id + '-' + filename; // try copy file, but do search first
-
-            const existInfo = await gd.existsInParent(copyFileName, self.props.copy_parent_id);
-            let copiedFileId;
-
-            if (existInfo.exists && !existInfo.multiple) {
-              copiedFileId = existInfo.file.id;
-            } else {
-              // has not copied file, copy it
-              const copiedFile = await gd.copy(result.id, self.props.copy_parent_id, copyFileName);
-              copiedFileId = copiedFile.id;
-            }
-
-            r = await gd.download(copiedFileId, request.headers.get('Range'));
-          } else {
-            // other error, return it
-            return new Response({
-              error: e
-            }, {
-              status: r.status
-            });
-          }
-        }
-
+        const r = await gd.download(result.id, request.headers.get('Range'));
         const h = new Headers(r.headers);
         h.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(result.name)}`);
         return new Response(r.body, {
