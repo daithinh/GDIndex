@@ -1,6 +1,14 @@
 	self.props = {
 		title: 'GDIndex',
 		default_root_id: 'root',
+		rootIds: JSON.stringify([{
+		"text": "", //Nmae for the first team drive or shared folder
+		"value": "" //RootID for the first team drive or shared folder
+		}, {
+		"text": "", //Nmae for the second team drive or shared folder
+		"value": "" //RootID for the second team drive or shared folder
+		//You can copy "text" and "value" line below, to creat more team drive or shared folder
+		}]),
 		client_id: '202264815644.apps.googleusercontent.com',
 		client_secret: 'X4Z3ca8xfWDb1Voo-F9a7ZxJ',
 		refresh_token: '',
@@ -2715,6 +2723,7 @@
 	<script>window.props = {
 	title: '${self.props.title}',
 	default_root_id: '${self.props.default_root_id}',
+	rootIds: '${self.props.rootIds}',
 	api: location.protocol + '//' + location.host,
 	upload: ${self.props.upload} },
 	export_url: ${self.props.export_url},
@@ -2733,7 +2742,7 @@
 
     if (path.startsWith('/~_~_gdindex/resources/')) {
       const remain = path.replace('/~_~_gdindex/resources/', '');
-      const r = await fetch(`https://raw.githubusercontent.com/maple3142/GDIndex/master/web/dist/${remain}`);
+      const r = await fetch(`https://raw.githubusercontent.com/daithinh/GDIndex/master/web/dist/${remain}`);
       return new Response(r.body, {
         headers: {
           'Content-Type': mime.getType(remain) + '; charset=utf-8',
