@@ -8,6 +8,7 @@
 		"text": "", //Nmae for the second team drive or shared folder
 		"value": "" //RootID for the second team drive or shared folder
 		//You can copy "text" and "value" line below, to creat more team drive or shared folder
+		}]),
 		client_id: '202264815644.apps.googleusercontent.com',
 		client_secret: 'X4Z3ca8xfWDb1Voo-F9a7ZxJ',
 		refresh_token: '',
